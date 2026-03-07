@@ -1,0 +1,138 @@
+<html>
+  <head>
+    <title>Search</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --color-base: #1e1e2e;
+        --color-text: #cdd6f4;
+        --color-accent: #cba6f7;
+        --color-subtext: #585b70;
+        --color-success: #a6e3a1;
+        --color-fail: #eba0ac;
+        --font-mono:
+          "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, monospace;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-base flex text-center justify-center h-full items-center text-text selection:bg-accent selection:text-base font-mono"
+    id="body"
+  >
+    <div class="relative w-140">
+      <input
+        type="text"
+        id="search"
+        class="relative z-10 w-full p-4 text-4xl leading-tight text-left bg-transparent focus:ring-0 focus:outline-none font-mono text-transparent caret-text selection:bg-accent/40 selection:text-transparent"
+        autofocus
+      />
+
+      <div
+        class="absolute inset-0 z-20 p-4 pointer-events-none font-mono text-4xl leading-tight text-left"
+        aria-hidden="true"
+      >
+        <span id="overlayCommandKey" class="text-text"></span
+        ><span id="overlayCommand" class="text-text"></span
+        ><span id="overlaySpace" class="text-text"></span
+        ><span id="overlaySuggestion" class="text-subtext"></span
+        ><span id="overlayBody" class="text-text"></span>
+      </div>
+    </div>
+    <!-- ...existing code... -->
+    <script>
+      const commandPrefixes = ["/", ":", ">"];
+      const commands = {
+        wiki: "https://en.wikipedia.org/wiki/Special:Search?search=",
+        google: "https://www.google.com/search?q=",
+        duck: "https://www.duckduckgo.com/?q=",
+        y: "https://www.youtube.com/results?search_query=",
+        r: "https://www.reddit.com/search/?q=",
+      };
+
+      // Clear search on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("search").value = "";
+      });
+
+      // Focus search on click anywhere
+      // document.addEventListener("click", () => {
+      //   document.getElementById("search").focus();
+      // });
+
+      // Handle typing and search on Enter key
+      document.getElementById("search").addEventListener("keydown", (e) => {
+        const query = e.target.value.trim();
+
+        // Prevent input of leading spaces
+        if (e.key === " " && query === "") {
+          e.preventDefault();
+        }
+
+        // Handle submission
+        if (e.key === "Enter") {
+          if (commandPrefixes.includes(query[0])) {
+            const commandArray = query.slice(1).split(" ");
+            if (commandKeys.includes(commandArray[0])) {
+              window.location.href = `${commands[commandArray[0]]}${encodeURIComponent(commandArray[1])}`;
+            } else {
+              console.log("invalid command");
+            }
+          } else {
+            window.location.href = `https://www.duckduckgo.com/?q=${encodeURIComponent(query)}`;
+          }
+        }
+      });
+
+      const search = document.getElementById("search");
+      const overlayCommandKey = document.getElementById("overlayCommandKey");
+      const overlayCommand = document.getElementById("overlayCommand");
+      const overlaySpace = document.getElementById("overlaySpace");
+      const overlaySuggestion = document.getElementById("overlaySuggestion");
+      const overlayBody = document.getElementById("overlayBody");
+
+      const commandKeys = Object.keys(commands);
+
+      function updateSuggestion() {
+        const raw = search.value;
+
+        const split = raw.match(
+          /^(?<commandChar>[/:>])(?<command>[^\s]*)(?<space>\s?)(?<body>.*)$/,
+        );
+        if (!split) {
+          console.log("no split");
+          overlayBody.textContent = raw;
+          overlayCommandKey.textContent = "";
+          overlayCommand.textContent = "";
+          overlaySpace.textContent = "";
+          overlaySuggestion.textContent = "";
+
+          return;
+        }
+
+        const { commandChar, command, space, body } = split.groups;
+
+        overlayCommandKey.textContent = commandChar;
+        overlayCommand.textContent = command;
+        overlaySpace.textContent = space;
+        overlayBody.textContent = body;
+        const match = commandKeys.find((c) => c.startsWith(command));
+        const exactMatch = commandKeys.find((c) => c === command);
+
+        overlayCommand.className = `whitespace-pre ${exactMatch ? "text-success" : "text-fail"} `;
+
+        const suffix =
+          space || body || !match || command === ""
+            ? ""
+            : match.slice(command.length);
+        overlaySuggestion.textContent = suffix;
+      }
+
+      search.addEventListener("input", updateSuggestion);
+
+      document.addEventListener("keydown", (e) => {
+        search.focus();
+      });
+    </script>
+  </body>
+</html>
