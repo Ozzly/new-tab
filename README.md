@@ -2,4 +2,4 @@
 
 A dead simple & minimalistic start page for your browser, based on a terminal experience.
 
-https://github.com/user-attachments/assets/c0fa5f41-fc1d-49a3-8286-d6eca4dc04cd
+![Image](https://github.com/user-attachments/assets/f1d10ab2-bdfa-4785-9c17-6e62594c6dab)
