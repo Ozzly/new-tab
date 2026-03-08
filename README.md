@@ -68,3 +68,33 @@ cd /path/to/directory && python3 -m http.server 8000 &
 ```
 
 or start as a systemd service (check for your distro).
+
+## Customisation
+
+To add your own bangs, edit the `commands` object in `index.html` and add a new entry with the desired bang and URL template. For example:
+
+```javascript
+const commands = {
+  // existing commands...
+  gh: "https://github.com/search?q=",
+};
+```
+
+Colors can be customised by editing the CSS variables in the `<style>` tag. For example:
+
+```css
+@theme {
+  --color-base: #1e1e2e;
+  --color-text: #cdd6f4;
+  --color-accent: #cba6f7;
+  --color-subtext: #585b70;
+  --color-success: #a6e3a1;
+  --color-fail: #eba0ac;
+}
+```
+
+## Todo
+
+- [ ] Add option to open search results in a new tab
+- [ ] Different URL if no search term is provided (e.g. `:g` goes to google.com instead of searching for an empty string)
+- [ ] Fix overlay text not scrolling correctly on overflow
