@@ -151,7 +151,8 @@
         if (e.key === "Enter") return handleEnter();
         if ((e.key === " ") & (e.target.value === ""))
           return e.preventDefault();
-        if (e.key === "Tab") return handleTab(e);
+        if (e.key === "Tab" || (e.ctrlKey && e.key === "f"))
+          return handleTab(e);
       });
 
       document.addEventListener("keydown", (e) => {
