@@ -13,9 +13,10 @@ A dead simple & minimalistic start page for your browser, inspired by a terminal
 
 ## Usage
 
-Start typing with a command key (`:` `/` `>`), followed by a bang, a space, then your search term:
+Use like a regular search box by typing to serach with DuckDuckGo, or use a bang by starting with a command key (`:` `/` `>`), followed by a bang, a space, then your search term:
 
 ```
+weather
 /wiki linux
 :yt one piece op1
 >gmaps kyrgyzstan
