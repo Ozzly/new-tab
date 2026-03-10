@@ -1,9 +1,8 @@
 <html>
   <head>
     <title>Search</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-      @theme {
+    <style>
+      :root {
         --color-base: #1e1e2e;
         --color-text: #cdd6f4;
         --color-accent: #cba6f7;
@@ -13,31 +12,105 @@
         --font-mono:
           "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, monospace;
       }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: var(--color-base);
+        color: var(--color-text);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+        font-family: var(--font-mono);
+      }
+
+      ::selection {
+        background: var(--color-accent);
+        color: var(--color-base);
+      }
+
+      #container {
+        position: relative;
+        width: 100%;
+      }
+
+      #search {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        padding: 1rem;
+        font-size: 3.75rem;
+        line-height: 1;
+        text-align: center;
+        background: transparent;
+        border: 0;
+        outline: none;
+        font-family: inherit;
+        color: transparent;
+        caret-color: var(--color-text);
+      }
+
+      #search::selection {
+        background: var(--color-accent);
+        color: transparent;
+      }
+
+      #overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        padding: 1rem;
+        pointer-events: none;
+        font-size: 3.75rem;
+        line-height: 1;
+        text-align: center;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      #overlay span {
+        white-space: pre;
+      }
+
+      #overlayCommand,
+      #overlayCommandKey,
+      #overlaySpace,
+      #overlayBody {
+        color: var(--color-text);
+      }
+
+      #overlaySuggestion {
+        color: var(--color-subtext);
+      }
+
+      .suggestion-wrapper {
+        display: inline-block;
+        width: 0;
+        overflow: visible;
+        white-space: nowrap;
+      }
     </style>
   </head>
 
-  <body
-    class="bg-base flex text-center justify-center h-full items-center text-text selection:bg-accent selection:text-base font-mono"
-    id="body"
-  >
-    <div class="relative w-full">
-      <input
-        type="text"
-        id="search"
-        class="relative z-10 w-full p-4 text-6xl leading-tight text-center bg-transparent focus:ring-0 focus:outline-none font-mono text-transparent caret-text selection:bg-accent/40 selection:text-transparent"
-        autofocus
-      />
+  <body>
+    <div id="container">
+      <input type="text" id="search" autofocus />
 
-      <div
-        class="absolute inset-0 z-20 p-4 pointer-events-none font-mono text-6xl leading-tight text-center overflow-x-auto whitespace-nowrap"
-        aria-hidden="true"
-      >
-        <span id="overlayCommandKey" class="text-text"></span
-        ><span id="overlayCommand" class="text-text"></span
-        ><span id="overlaySpace" class="text-text"></span
-        ><span id="overlayBody" class="text-text"></span
-        ><span class="inline-block w-0 overflow-visible whitespace-nowrap"
-          ><span id="overlaySuggestion" class="text-subtext"></span
+      <div id="overlay" aria-hidden="true">
+        <span id="overlayCommandKey"></span><span id="overlayCommand"></span
+        ><span id="overlaySpace"></span><span id="overlayBody"></span
+        ><span class="suggestion-wrapper"
+          ><span id="overlaySuggestion"></span
         ></span>
       </div>
     </div>
@@ -92,6 +165,7 @@
           overlayBody.textContent = raw;
           overlayCommandKey.textContent = "";
           overlayCommand.textContent = "";
+          overlayCommand.style.color = "var(--color-text)";
           overlaySpace.textContent = "";
           overlaySuggestion.textContent = "";
           return;
@@ -114,7 +188,9 @@
 
         // Color overlay command based on if it matches an existing command
         const exactMatch = commandKeys.find((c) => c === command);
-        overlayCommand.className = `whitespace-pre ${exactMatch ? "text-success" : "text-fail"} `;
+        overlayCommand.style.color = exactMatch
+          ? "var(--color-success)"
+          : "var(--color-fail)";
       }
 
       function handleEnter() {
@@ -146,7 +222,7 @@
         if (!commandChar || command.length === 0 || !match) return;
 
         // Update the color of the overlay command, which will always be correct
-        overlayCommand.className = "whitespace-pre text-success";
+        overlayCommand.style.color = "var(--color-success)";
         // Set values of overlay fields
         overlayCommand.textContent = match;
         overlaySuggestion.textContent = "";

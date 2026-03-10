@@ -83,7 +83,7 @@ const commands = {
 Colors can be customised by editing the CSS variables in the `<style>` tag. For example:
 
 ```css
-@theme {
+:root {
   --color-base: #1e1e2e;
   --color-text: #cdd6f4;
   --color-accent: #cba6f7;
