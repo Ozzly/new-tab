@@ -22,6 +22,13 @@ weather
 >gmaps kyrgyzstan
 ```
 
+If you forgot the command key, you can also put it after a valid bang and it will convert it to the correct format:
+
+```
+duck: -> :duck
+yt: one piece --> :yt one piece
+```
+
 ## Built in Bangs
 
 | Bang                           | Destination                                  |
@@ -99,3 +106,4 @@ Colors can be customised by editing the CSS variables in the `<style>` tag. For 
 - [ ] Different URL if no search term is provided (e.g. `:g` goes to google.com instead of searching for an empty string)
 - [ ] Fix overlay text not scrolling correctly on overflow
 - [x] Fix URLs searching instead of going to the URL if the search term looks like a URL (e.g. `example.com` goes to `https://www.duckduckgo.com/search?q=example.com` instead of `https://example.com`)
+- [x] Add support for forgetful bangs, where the command key is after the bang (e.g. `g:search term` or `search term:g` instead of `:g search term`)

@@ -117,6 +117,8 @@
     <script>
       const regex =
         /^(?<commandChar>[/:>])(?<command>[^\s]*)(?<space>\s?)(?<body>.*)$/;
+      const forgetfulRegex =
+        /^(?<command>[a-z0-9-]*)(?<commandChar>[/:>])(?<space>\s?)(?<body>.*)$/i;
       const urlRegex =
         /^(https?:\/\/)?(www\.)?(?<domain>[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?)$/i;
       const commands = {
@@ -162,8 +164,20 @@
       function updateSuggestion() {
         const raw = search.value;
         const split = raw.match(regex);
+
+        // Check if query matches forgetful regex
         if (!split) {
-          // Clear overlay if no command used
+          const splitAlt = raw.match(forgetfulRegex);
+          if (splitAlt && commands[splitAlt.groups.command]) {
+            const { commandChar, command, space, body } = splitAlt.groups;
+            const normalised = `${commandChar}${command}${space}${body}`;
+            if (search.value !== normalised) search.value = normalised;
+            split = normalised.match(regex);
+          }
+        }
+
+        // If no match, set overlay body to the query
+        if (!split) {
           overlayBody.textContent = raw;
           overlayCommandKey.textContent = "";
           overlayCommand.textContent = "";
