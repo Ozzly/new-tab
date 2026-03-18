@@ -145,6 +145,13 @@
         gu: "https://github.com/",
         codestats: "https://codestats.net/users/",
         cs: "https://codestats.net/users/",
+        daily: [
+          "https://enclose.horse/",
+          "https://shikakuofthe.day/",
+          "https://www.nytimes.com/games/connections",
+          "https://www.nytimes.com/games/wordle/index.html",
+          "https://travle.earth/",
+        ],
       };
 
       // Clear search on page load
@@ -225,7 +232,11 @@
         if (split) {
           const { commandChar, command, space, body } = split.groups;
           if (commands[command]) {
-            window.location.href = `${commands[command]}${encodeURIComponent(body)}`;
+            if (commands[command] instanceof Array) {
+              commands[command].forEach((site) => window.open(site));
+            } else {
+              window.location.href = `${commands[command]}${encodeURIComponent(body)}`;
+            }
             return;
           } else {
             console.log("invalid command");
