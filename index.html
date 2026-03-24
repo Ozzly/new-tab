@@ -58,6 +58,8 @@
         font-family: inherit;
         color: transparent;
         caret-color: var(--color-text);
+        resize: none;
+        overflow: hidden;
       }
 
       #search::selection {
@@ -74,12 +76,12 @@
         font-size: 3.75rem;
         line-height: 1;
         text-align: center;
-        overflow-x: auto;
+        overflow: hidden;
         white-space: nowrap;
       }
 
       #overlay span {
-        white-space: pre;
+        white-space: pre-wrap;
       }
 
       #overlayCommand,
@@ -104,7 +106,7 @@
 
   <body>
     <div id="container">
-      <input type="text" id="search" autofocus />
+      <textarea rows="1" id="search" autofocus></textarea>
 
       <div id="overlay" aria-hidden="true">
         <span id="overlayCommandKey"></span><span id="overlayCommand"></span
@@ -303,9 +305,17 @@
         search.value = `${commandChar}${match}`;
       }
 
+      function autoGrow() {
+        search.style.height = `${search.scrollHeight}px`;
+      }
+
+      search.addEventListener("input", autoGrow);
       search.addEventListener("input", updateSuggestion);
       search.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") return handleEnter();
+        if (e.key === "Enter") {
+          e.preventDefault();
+          return handleEnter();
+        }
         if ((e.key === " ") & (e.target.value === ""))
           return e.preventDefault();
         if (e.key === "Tab" || (e.ctrlKey && e.key === "f"))
